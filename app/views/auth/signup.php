@@ -1,8 +1,8 @@
+<!-- <img class="inline-img" src="<?= e(asset('images/logo2.png')) ?>" alt="" /> -->
 <main class="auth-container">
   <section class="auth-box">
     <div class="brand-header">
-      <img class="inline-img" src="<?= e(asset('images/logo.png')) ?>" alt="" />
-      <p>Sinulid</p>
+      <p>ᜐᜒᜈᜓᜎᜒᜇ᜔</p> <br>
     </div>
     <h1>Create Account</h1>
     <p class="subtitle">Join Sinulid and start sharing.</p>
@@ -10,14 +10,8 @@
     <?php require BASE_PATH . '/app/views/partials/flash.php'; ?>
     <?php require BASE_PATH . '/app/views/partials/errors.php'; ?>
 
-    <form id="signupForm" action="<?= e(url('auth/signup')) ?>" method="post" enctype="multipart/form-data">
+    <form id="signupForm" action="<?= e(url('auth/signup')) ?>" method="post">
       <?= csrf_field() ?>
-
-      <div class="form-group">
-        <label for="full_name">Full Name</label>
-        <input type="text" id="full_name" name="full_name" placeholder="Enter your full name"
-               minlength="2" maxlength="100" value="<?= e($old['full_name']) ?>" autocomplete="name" required />
-      </div>
 
       <div class="form-group">
         <label for="username">Username</label>
@@ -43,11 +37,6 @@
         <label for="confirmPassword">Confirm Password</label>
         <input type="password" id="confirmPassword" name="confirm_password" placeholder="Enter password again"
                autocomplete="new-password" required />
-      </div>
-
-      <div class="form-group">
-        <label for="profile_image">Profile picture (optional)</label>
-        <input type="file" id="profile_image" name="profile_image" accept="image/jpeg,image/png,image/gif,image/webp" />
       </div>
 
       <button type="submit" class="primary-btn">Create Account</button>

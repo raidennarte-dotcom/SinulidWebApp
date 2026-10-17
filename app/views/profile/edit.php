@@ -41,6 +41,24 @@
           <button type="submit" class="composer__submit">Save profile</button>
         </div>
       </form>
+      <section class="anon-card" aria-labelledby="anon-card-title">
+  <h2 class="form-card__title" id="anon-card-title">Anonymous account</h2>
+  <p class="field-hint">
+    Pick the name people see when anonymous mode is on. They never see your real name, username or picture.
+  </p>
+  <form class="anon-card__form" action="<?= e(url('anon/name')) ?>" method="post">
+    <?= csrf_field() ?>
+    <div class="form-field">
+      <label for="anon-name">Anonymous name</label>
+      <input class="text-input" type="text" id="anon-name" name="anon_name"
+             minlength="3" maxlength="30" placeholder="e.g. Midnight Owl"
+             value="<?= e($currentUser['anon_name'] ?? '') ?>" required>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn">Save anonymous name</button>
+    </div>
+  </form>
+</section>
     </section>
   </div>
 </main>

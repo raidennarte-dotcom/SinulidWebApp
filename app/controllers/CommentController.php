@@ -25,6 +25,12 @@ class CommentController extends Controller
         }
 
         (new CommentModel($this->pdo))->create($postId, (int) $me['id'], $content);
+                try {
+            $anon = (new UserModel($this->pdo))->isAnonymous((int) $me['id']);
+            (new NotificationModel($this->pdo))->notifyPostOwner($postId, (int) $me['id'], $anon, 'comment');
+        } catch (Throwable $e) {
+            error_log('Notification failed: ' . $e->getMessage());
+        }
         flash('success', 'Comment added.');
         redirect($back);
     }

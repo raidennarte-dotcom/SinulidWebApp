@@ -42,7 +42,9 @@ class PostController extends Controller
             return;
         }
 
-        $id = (new PostModel($this->pdo))->create((int) $me['id'], $content, $image);
+        $id = (new PostModel($this->pdo))->create(
+            (int) $me['id'], $content, $image, $this->isAnonymousMode((int) $me['id'])
+        );
         flash('success', 'Your post was published.');
         redirect(url('feed') . '#post-' . $id);
     }
@@ -129,5 +131,36 @@ class PostController extends Controller
             $this->showError(403, 'You can only change your own posts.');
         }
         return $post;
+    }
+
+               public function repost(): void
+    {
+        $me = $this->requireLogin();
+        $this->requireCsrf();
+
+        $postId = (int) ($_POST['id'] ?? 0);
+        $anon   = (new UserModel($this->pdo))->isAnonymous((int) $me['id']);
+        $newId  = (new PostModel($this->pdo))->createRepost((int) $me['id'], $postId, $anon);
+
+        if ($newId === null) {
+            flash('error', 'That post no longer exists.');
+        } else {
+            try {
+                (new NotificationModel($this->pdo))->notifyShare($newId, (int) $me['id'], $anon);
+            } catch (Throwable $e) {
+                error_log('Notification failed: ' . $e->getMessage());
+            }
+            flash('success', 'Shared to your feed.');
+        }
+        redirect(safe_next($_POST['next'] ?? null, url('feed')));
+    }
+
+    /** Read fresh from the database so a stale session can never leak a real name. */
+    private function isAnonymousMode(int $userId): bool
+    {
+        $u = (new UserModel($this->pdo))->findById($userId);
+        return $u !== null
+            && (int) ($u['anon_mode'] ?? 0) === 1
+            && trim((string) ($u['anon_name'] ?? '')) !== '';
     }
 }

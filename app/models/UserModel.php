@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 class UserModel
 {
-    private const COLUMNS = 'id, username, email, password, full_name, bio, profile_image, created_at';
-
+        private const COLUMNS = 'id, username, email, password, full_name, bio, profile_image, anon_name, anon_mode, created_at';
     public function __construct(private PDO $pdo) {}
 
     public function findById(int $id): ?array
@@ -46,18 +45,16 @@ class UserModel
     }
 
     /** Returns the new user's id. Throws PDOException (code 23000) on duplicates. */
-    public function create(string $username, string $email, string $passwordHash, string $fullName, ?string $profileImage): int
+    public function create(string $username, string $email, string $passwordHash): int
     {
         $st = $this->pdo->prepare(
-            'INSERT INTO users (username, email, password, full_name, profile_image)
-             VALUES (:username, :email, :password, :full_name, :image)'
+            'INSERT INTO users (username, email, password)
+             VALUES (:username, :email, :password)'
         );
         $st->execute([
-            ':username'  => $username,
-            ':email'     => $email,
-            ':password'  => $passwordHash,
-            ':full_name' => $fullName,
-            ':image'     => $profileImage,
+            ':username' => $username,
+            ':email'    => $email,
+            ':password' => $passwordHash,
         ]);
         return (int) $this->pdo->lastInsertId();
     }
@@ -89,5 +86,34 @@ class UserModel
         $st->bindValue(':lim', $limit, PDO::PARAM_INT);
         $st->execute();
         return $st->fetchAll();
+    }
+
+    public function anonNameTaken(string $name, int $exceptId): bool
+    {
+        $st = $this->pdo->prepare('SELECT 1 FROM users WHERE anon_name = :n AND id <> :id LIMIT 1');
+        $st->execute([':n' => $name, ':id' => $exceptId]);
+        return (bool) $st->fetchColumn();
+    }
+
+    public function setAnonName(int $id, string $name): void
+    {
+        $st = $this->pdo->prepare('UPDATE users SET anon_name = :n WHERE id = :id');
+        $st->execute([':n' => $name, ':id' => $id]);
+    }
+
+    public function setAnonMode(int $id, bool $on): void
+    {
+        $st = $this->pdo->prepare('UPDATE users SET anon_mode = :m WHERE id = :id');
+        $st->execute([':m' => $on ? 1 : 0, ':id' => $id]);
+    }
+
+        public function isAnonymous(int $id): bool
+    {
+        $st = $this->pdo->prepare(
+            "SELECT 1 FROM users
+              WHERE id = :id AND anon_mode = 1 AND anon_name IS NOT NULL AND anon_name <> '' LIMIT 1"
+        );
+        $st->execute([':id' => $id]);
+        return (bool) $st->fetchColumn();
     }
 }

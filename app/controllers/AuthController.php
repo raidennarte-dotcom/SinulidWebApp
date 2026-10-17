@@ -28,7 +28,7 @@ class AuthController extends Controller
                 if ($user !== null && $ok) {
                     session_regenerate_id(true);
                     $_SESSION['user_id'] = (int) $user['id'];
-                    flash('success', 'Welcome back, ' . $user['full_name'] . '!');
+                    flash('success', 'Welcome back, ' . $user['username'] . '!');
                     redirect(url('feed'));
                 }
                 $errors[] = 'Invalid email/username or password.';
@@ -49,24 +49,19 @@ class AuthController extends Controller
         }
 
         $errors = [];
-        $old    = ['full_name' => '', 'username' => '', 'email' => ''];
+        $old    = ['username' => '', 'email' => ''];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->requireCsrf();
             $users = new UserModel($this->pdo);
 
             $old = [
-                'full_name' => trim((string) ($_POST['full_name'] ?? '')),
-                'username'  => trim((string) ($_POST['username'] ?? '')),
-                'email'     => trim((string) ($_POST['email'] ?? '')),
+                'username' => trim((string) ($_POST['username'] ?? '')),
+                'email'    => trim((string) ($_POST['email'] ?? '')),
             ];
             $password = (string) ($_POST['password'] ?? '');
             $confirm  = (string) ($_POST['confirm_password'] ?? '');
 
-            $nameLen = mb_strlen($old['full_name']);
-            if ($nameLen < 2 || $nameLen > 100) {
-                $errors[] = 'Full name must be 2 to 100 characters.';
-            }
             if (preg_match('/^[A-Za-z0-9_]{3,30}$/', $old['username']) !== 1) {
                 $errors[] = 'Username must be 3 to 30 characters: letters, numbers and underscores only.';
             }
@@ -90,35 +85,22 @@ class AuthController extends Controller
                 }
             }
 
-            $avatar = null;
-            if ($errors === []) {
-                [$avatar, $uploadError] = handle_image_upload($_FILES['profile_image'] ?? null, 'avatars', MAX_AVATAR_BYTES);
-                if ($uploadError !== null) {
-                    $errors[] = $uploadError;
-                }
-            }
-
             if ($errors === []) {
                 try {
                     $users->create(
                         $old['username'],
                         $old['email'],
-                        password_hash($password, PASSWORD_DEFAULT),
-                        $old['full_name'],
-                        $avatar
+                        password_hash($password, PASSWORD_DEFAULT)
                     );
                     flash('success', 'Account created! You can log in now.');
                     redirect(url('auth/login'));
                 } catch (PDOException $e) {
-                    delete_upload($avatar);
                     if ($e->getCode() === '23000') {
                         $errors[] = 'That username or email address is already registered.';
                     } else {
                         throw $e;
                     }
                 }
-            } else {
-                delete_upload($avatar);
             }
         }
 

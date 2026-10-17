@@ -1,5 +1,10 @@
 <?php
-$isAuth = ($layout ?? 'app') === 'auth';
+$isAuth  = ($layout ?? 'app') === 'auth';
+$cssFile = $isAuth ? 'css/style.css' : 'css/MainStyle.css';
+$ver = function (string $file): int {
+    $path = BASE_PATH . '/public/assets/' . $file;
+    return is_file($path) ? (int) filemtime($path) : 0;
+};
 ?>
 <!doctype html>
 <html lang="en" data-theme="light">
@@ -8,8 +13,8 @@ $isAuth = ($layout ?? 'app') === 'auth';
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="<?= e(csrf_token()) ?>" />
     <title><?= e($pageTitle ?? 'Sinulid') ?> | Sinulid</title>
-    <link rel="icon" type="image/png" href="<?= e(asset('images/logo.png')) ?>" />
-    <link rel="stylesheet" href="<?= e(asset($isAuth ? 'css/style.css' : 'css/MainStyle.css')) ?>" />
+    <link rel="icon" type="image/png" href="<?= e(asset('images/logo2.png')) ?>" />
+    <link rel="stylesheet" href="<?= e(asset($cssFile)) ?>?v=<?= $ver($cssFile) ?>" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 <?php if (!$isAuth): ?>
     <script>
@@ -24,7 +29,7 @@ $isAuth = ($layout ?? 'app') === 'auth';
       })();
     </script>
 <?php endif; ?>
-    <script src="<?= e(asset('js/script.js')) ?>" defer></script>
+    <script src="<?= e(asset('js/script.js')) ?>?v=<?= $ver('js/script.js') ?>" defer></script>
   </head>
 <?php if ($isAuth): ?>
   <body>
@@ -32,9 +37,6 @@ $isAuth = ($layout ?? 'app') === 'auth';
   <body class="app" data-logged-in="<?= $currentUser ? 'true' : 'false' ?>">
 
     <header class="topbar">
-      <a href="<?= e(url('feed')) ?>" class="topbar__logo-link" aria-label="Sinulid home">
-        <img class="topbar__logo" src="<?= e(asset('images/logo.png')) ?>" alt="" />
-      </a>
       <a href="<?= e(url('feed')) ?>" class="topbar__brand">Sinulid</a>
 
       <form class="search" role="search" action="<?= e(base_url()) ?>/index.php" method="get">
@@ -52,6 +54,7 @@ $isAuth = ($layout ?? 'app') === 'auth';
       </form>
 
       <?php if ($currentUser): ?>
+      <?php require BASE_PATH . '/app/views/partials/notifications.php'; ?>
       <button
         type="button"
         class="profile-toggle"

@@ -1,8 +1,8 @@
+<!-- <img class="inline-img" src="<?= e(asset('images/logo2.png')) ?>" alt="" /> -->
 <main class="auth-container">
   <section class="auth-box">
     <div class="brand-header">
-      <img class="inline-img" src="<?= e(asset('images/logo.png')) ?>" alt="" />
-      <p>Sinulid</p>
+      <p>ᜐᜒᜈᜓᜎᜒᜇ᜔</p>
     </div>
 
     <h1>Welcome Back!</h1>

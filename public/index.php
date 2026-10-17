@@ -7,11 +7,11 @@ define('UPLOAD_PATH', __DIR__ . '/uploads');
 require BASE_PATH . '/config/database.php';
 require BASE_PATH . '/app/helpers.php';
 
-foreach (['UserModel', 'PostModel', 'CommentModel', 'LikeModel'] as $file) {
+foreach (['UserModel', 'PostModel', 'CommentModel', 'LikeModel', 'FollowModel', 'NotificationModel'] as $file) {
     require BASE_PATH . '/app/models/' . $file . '.php';
 }
 require BASE_PATH . '/app/controllers/Controller.php';
-foreach (['Auth', 'Profile', 'Post', 'Comment', 'Like', 'Search'] as $name) {
+foreach (['Auth', 'Profile', 'Post', 'Comment', 'Like', 'Search', 'Anon', 'Follow', 'Notification'] as $name) {
     require BASE_PATH . '/app/controllers/' . $name . 'Controller.php';
 }
 
@@ -27,6 +27,14 @@ $routes = [
     'post/edit'       => ['PostController',    'edit',    ['GET']],
     'post/update'     => ['PostController',    'update',  ['POST']],
     'post/delete'     => ['PostController',    'delete',  ['POST']],
+    'post/repost'     => ['PostController',    'repost',  ['POST']],
+    'anon/toggle'     => ['AnonController',    'toggle',   ['POST']],
+    'anon/name'       => ['AnonController',    'saveName', ['POST']],
+    'follow/toggle'   => ['FollowController',  'toggle',   ['POST']],
+    'follow/followers' => ['FollowController', 'followers', ['GET']],
+    'follow/following' => ['FollowController', 'following', ['GET']],
+    'notifications/read' => ['NotificationController', 'read', ['POST']],
+    
 
     'comment/store'   => ['CommentController', 'store',   ['POST']],
     'comment/edit'    => ['CommentController', 'edit',    ['GET']],

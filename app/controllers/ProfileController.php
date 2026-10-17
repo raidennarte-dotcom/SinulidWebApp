@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 class ProfileController extends Controller
 {
-    public function show(): void
+        public function show(): void
     {
         $me    = $this->requireLogin();
         $users = new UserModel($this->pdo);
@@ -14,12 +14,21 @@ class ProfileController extends Controller
             $this->showError(404, 'That user does not exist.');
         }
 
-        $posts = (new PostModel($this->pdo))->byUser((int) $profile['id'], (int) $me['id']);
+        $myId      = (int) $me['id'];
+        $profileId = (int) $profile['id'];
+        $isOwner   = $profileId === $myId;
+        $follows   = new FollowModel($this->pdo);
+
+        $posts = (new PostModel($this->pdo))->byUser($profileId, $myId);
         $this->render('profile/show', [
-            'pageTitle'   => $profile['full_name'],
-            'profileUser' => $profile,
-            'isOwner'     => (int) $profile['id'] === (int) $me['id'],
-            'posts'       => $this->attachComments($posts),
+            'pageTitle'       => display_name($profile),
+            'profileUser'     => $profile,
+            'isOwner'         => $isOwner,
+            'followerCount'   => $follows->followerCount($profileId, $myId),
+            'followingCount'  => $follows->followingCount($profileId, $myId),
+            'isFollowing'     => !$isOwner && $follows->isFollowing($myId, $profileId),
+            'viewerAnonymous' => $users->isAnonymous($myId),
+            'posts'           => $this->attachComments($posts),
         ]);
     }
 
@@ -29,7 +38,10 @@ class ProfileController extends Controller
         $this->render('profile/edit', [
             'pageTitle' => 'Edit profile',
             'errors'    => [],
-            'form'      => ['full_name' => $me['full_name'], 'bio' => (string) $me['bio']],
+            'form'      => [
+                'full_name' => (string) ($me['full_name'] ?? ''),
+                'bio'       => (string) ($me['bio'] ?? ''),
+            ],
         ]);
     }
 
@@ -43,7 +55,7 @@ class ProfileController extends Controller
         $errors   = [];
 
         $nameLen = mb_strlen($fullName);
-        if ($nameLen < 2 || $nameLen > 100) {
+        if ($fullName !== '' && ($nameLen < 2 || $nameLen > 100)) {
             $errors[] = 'Full name must be 2 to 100 characters.';
         }
         if (mb_strlen($bio) > 300) {

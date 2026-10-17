@@ -5,10 +5,11 @@
         <div class="profile-card__avatar"><?= avatar_html($profileUser) ?></div>
         <div class="profile-card__info">
           <h1 class="profile-card__name"><?= e($profileUser['full_name']) ?></h1>
+          <?php require BASE_PATH . '/app/views/partials/follow-box.php'; ?>
           <p class="profile-card__username">@<?= e($profileUser['username']) ?></p>
           <?php if (!empty($profileUser['bio'])): ?>
             <p class="profile-card__bio"><?= nl2br(e($profileUser['bio'])) ?></p>
-          <?php else: ?>
+          <?php else: ?>s
             <p class="profile-card__bio profile-card__bio--empty">No bio yet.</p>
           <?php endif; ?>
           <p class="profile-card__stats">

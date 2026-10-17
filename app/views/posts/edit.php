@@ -12,15 +12,19 @@
         <textarea class="composer__textarea" id="edit-content" name="content" rows="6" maxlength="2000" required><?= e($post['content']) ?></textarea>
 
         <?php if (!empty($post['image'])): ?>
-          <img class="post__image" src="<?= e(upload_url($post['image'])) ?>" alt="Current photo of this post">
+          <img id="current-photo" class="post__image" src="<?= e(upload_url($post['image'])) ?>" alt="Current photo of this post">
           <label class="check-row">
             <input type="checkbox" name="remove_image" value="1"> Remove this photo
           </label>
         <?php endif; ?>
 
         <div class="form-field">
-          <label for="edit-image"><?= empty($post['image']) ? 'Add a photo (optional)' : 'Replace photo (optional)' ?></label>
-          <input type="file" id="edit-image" name="image" accept="image/jpeg,image/png,image/gif,image/webp">
+          <span class="photo-label"><?= empty($post['image']) ? 'Add a photo (optional)' : 'Replace photo (optional)' ?></span>
+          <label for="edit-image" class="btn btn--ghost photo-picker">Choose photo</label>
+          <input type="file" id="edit-image" name="image" class="visually-hidden"
+                 accept="image/jpeg,image/png,image/gif,image/webp">
+
+          <img id="photo-preview" class="photo-preview" alt="Preview of the new photo" hidden>
         </div>
 
         <div class="form-actions">
@@ -31,3 +35,23 @@
     </section>
   </div>
 </main>
+
+<script>
+  const photoInput   = document.getElementById('edit-image');
+  const photoPreview = document.getElementById('photo-preview');
+  const currentPhoto = document.getElementById('current-photo');
+
+  photoInput.addEventListener('change', function () {
+    const file = photoInput.files[0];
+
+    if (file && file.type.startsWith('image/')) {
+      photoPreview.src = URL.createObjectURL(file);
+      photoPreview.hidden = false;
+      if (currentPhoto) currentPhoto.hidden = true;
+    } else {
+      photoPreview.removeAttribute('src');
+      photoPreview.hidden = true;
+      if (currentPhoto) currentPhoto.hidden = false;
+    }
+  });
+</script>

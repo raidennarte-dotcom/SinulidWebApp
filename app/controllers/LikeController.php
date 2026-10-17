@@ -16,7 +16,15 @@ class LikeController extends Controller
             $this->json(['ok' => false, 'message' => 'That post no longer exists.'], 404);
         }
 
-        $result = (new LikeModel($this->pdo))->toggle($postId, (int) $me['id']);
+        $result = (new LikeModel($this->pdo))->toggle((int) $me['id'], $postId);
+        if ($result['liked']) {
+            try {
+                $anon = (new UserModel($this->pdo))->isAnonymous((int) $me['id']);
+                (new NotificationModel($this->pdo))->notifyPostOwner($postId, (int) $me['id'], $anon, 'like');
+            } catch (Throwable $e) {
+                error_log('Notification failed: ' . $e->getMessage());
+            }
+        }
         $this->json(['ok' => true, 'liked' => $result['liked'], 'count' => $result['count']]);
     }
 }

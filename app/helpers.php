@@ -144,13 +144,25 @@ function initial_of(?string $name): string
     return $name === '' ? '?' : mb_strtoupper(mb_substr($name, 0, 1));
 }
 
+function display_name(array $user): string
+{
+    $name = trim((string) ($user['full_name'] ?? ''));
+    if (!empty($user['is_anonymous'])) {
+        return $name !== '' ? $name : 'Anonymous';
+    }
+    return $name !== '' ? $name : (string) ($user['username'] ?? '');
+}
+
 function avatar_html(array $user): string
 {
+    if (!empty($user['is_anonymous'])) {
+        return '<span class="avatar-initial avatar-anon" aria-hidden="true"><i class="bi bi-incognito"></i></span>';
+    }
     $src = upload_url($user['profile_image'] ?? null);
     if ($src !== null) {
         return '<img src="' . e($src) . '" alt="">';
     }
-    return '<span class="avatar-initial" aria-hidden="true">' . e(initial_of($user['full_name'] ?? '')) . '</span>';
+    return '<span class="avatar-initial" aria-hidden="true">' . e(initial_of(display_name($user))) . '</span>';
 }
 
 function time_ago(string $datetime): string

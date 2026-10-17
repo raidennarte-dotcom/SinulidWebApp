@@ -13,8 +13,8 @@
   if (password && confirmPassword) {
     const checkMatch = function () {
       confirmPassword.setCustomValidity(
-        password.value !== confirmPassword.value 
-          ? "Passwords do not match." 
+        password.value !== confirmPassword.value
+          ? "Passwords do not match."
           : "",
       );
     };
@@ -22,7 +22,7 @@
     confirmPassword.addEventListener("input", checkMatch);
   }
 
- /* ==========================================================
+  /* ==========================================================
      B. MAIN PAGE (only runs when the profile button exists)
      ========================================================== */
   const topbar = document.querySelector(".topbar");
@@ -66,7 +66,7 @@
     }, 2600);
   }
 
-/* ---------- 1. DARK MODE ---------- */
+  /* ---------- 1. DARK MODE ---------- */
   function saveTheme(theme) {
     try {
       localStorage.setItem(STORAGE_KEY, theme);
@@ -77,14 +77,16 @@
 
   function applyTheme(theme) {
     root.setAttribute("data-theme", theme);
-    if (themeToggle) themeToggle.setAttribute("aria-pressed", String(theme === "dark"));
+    if (themeToggle)
+      themeToggle.setAttribute("aria-pressed", String(theme === "dark"));
   }
 
   applyTheme(root.getAttribute("data-theme") === "dark" ? "dark" : "light");
 
   if (themeToggle) {
     themeToggle.addEventListener("click", function () {
-      const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      const next =
+        root.getAttribute("data-theme") === "dark" ? "light" : "dark";
       applyTheme(next);
       saveTheme(next);
     });
@@ -112,7 +114,10 @@
     const setPanelOpen = function (open) {
       profilePanel.hidden = !open;
       profileToggle.setAttribute("aria-expanded", String(open));
-      profileToggle.setAttribute("aria-label", open ? "Close profile" : "Open profile");
+      profileToggle.setAttribute(
+        "aria-label",
+        open ? "Close profile" : "Open profile",
+      );
       if (!open) setSettingsOpen(false);
     };
 
@@ -122,7 +127,11 @@
 
     document.addEventListener("click", function (event) {
       if (!isPanelOpen()) return;
-      if (profilePanel.contains(event.target) || profileToggle.contains(event.target)) return;
+      if (
+        profilePanel.contains(event.target) ||
+        profileToggle.contains(event.target)
+      )
+        return;
       setPanelOpen(false);
     });
 
@@ -160,9 +169,11 @@
     document.querySelectorAll(".share-menu").forEach(function (menu) {
       menu.hidden = true;
     });
-    document.querySelectorAll('[data-action="share"]').forEach(function (button) {
-      button.setAttribute("aria-expanded", "false");
-    });
+    document
+      .querySelectorAll('[data-action="share"]')
+      .forEach(function (button) {
+        button.setAttribute("aria-expanded", "false");
+      });
   }
 
   async function handleLike(button) {
@@ -180,7 +191,7 @@
         method: "POST",
         headers: {
           "X-CSRF-Token": csrfToken,
-          "Accept": "application/json",
+          Accept: "application/json",
         },
         body: body,
         credentials: "same-origin",
@@ -194,7 +205,10 @@
       }
 
       if (!response.ok || !data || data.ok !== true) {
-        showToast((data && data.message) || "Could not update your like. Please try again.");
+        showToast(
+          (data && data.message) ||
+            "Could not update your like. Please try again.",
+        );
         return;
       }
 
@@ -289,4 +303,19 @@
     const target = document.getElementById(window.location.hash.slice(1));
     if (target) target.scrollIntoView({ block: "start" });
   }
+})();
+
+(function () {
+  document.addEventListener("click", function (e) {
+    document.querySelectorAll("details.post__more[open]").forEach(function (d) {
+      if (!d.contains(e.target)) d.removeAttribute("open");
+    });
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    document.querySelectorAll("details.post__more[open]").forEach(function (d) {
+      d.removeAttribute("open");
+    });
+  });
 })();
