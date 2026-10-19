@@ -116,7 +116,140 @@ $isAuth = ($layout ?? 'app') === 'auth';
 <?php endif; ?>
   </body>
 
-  <script>
+
+    <script>
+  (function () {
+    var LIMITS = { post: 4 * 1024 * 1024, avatar: 2 * 1024 * 1024 };
+    var TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+
+    function check(file, limit) {
+      if (file.type && TYPES.indexOf(file.type) === -1) {
+        return 'Only JPG, PNG, GIF or WEBP images are allowed.';
+      }
+      if (file.size > limit) {
+        return 'Image must be ' + Math.round(limit / 1048576) + ' MB or smaller.';
+      }
+      return '';
+    }
+
+    /* ---------- Post box on the feed ---------- */
+    var postInput = document.getElementById('composer-files');
+    if (postInput) {
+      var box = document.createElement('div');
+      box.className = 'photo-review';
+      box.hidden = true;
+      box.innerHTML =
+        '<img class="photo-review__img" alt="Photo preview" hidden>' +
+        '<button type="button" class="btn btn--ghost photo-review__remove" hidden>Remove photo</button>' +
+        '<p class="photo-review__note is-error" role="alert" hidden></p>';
+
+      var anchor = postInput.closest('.composer__upload') || postInput.parentElement;
+      anchor.insertAdjacentElement('afterend', box);
+
+      var img = box.querySelector('img');
+      var remove = box.querySelector('button');
+      var note = box.querySelector('p');
+      var postUrl = null;
+
+      function clearPost() {
+        if (postUrl) { URL.revokeObjectURL(postUrl); postUrl = null; }
+        img.removeAttribute('src');
+        img.hidden = true;
+        remove.hidden = true;
+        note.hidden = true;
+        box.hidden = true;
+      }
+
+      postInput.addEventListener('change', function () {
+        clearPost();
+        var file = postInput.files[0];
+        if (!file) return;
+
+        var problem = check(file, LIMITS.post);
+        if (problem) {
+          postInput.value = '';
+          note.textContent = problem;
+          note.hidden = false;
+          box.hidden = false;
+          return;
+        }
+        postUrl = URL.createObjectURL(file);
+        img.src = postUrl;
+        img.hidden = false;
+        remove.hidden = false;
+        box.hidden = false;
+      });
+
+      remove.addEventListener('click', function () {
+        postInput.value = '';
+        clearPost();
+        postInput.dispatchEvent(new Event('change'));
+      });
+    }
+
+    /* ---------- Profile picture on Edit profile ---------- */
+    var avatarInput = document.querySelector('input[type="file"][name="profile_image"]');
+    if (avatarInput) {
+      var wrap = avatarInput.closest('.profile-edit-avatar');
+      var circle = null;
+
+      if (wrap) {
+        for (var i = 0; i < wrap.children.length; i++) {
+          if (!wrap.children[i].contains(avatarInput)) { circle = wrap.children[i]; break; }
+        }
+      }
+      var madeCircle = false;
+      if (!circle) {
+        circle = document.createElement('div');
+        circle.className = 'photo-review__avatar-box';
+        circle.hidden = true;
+        avatarInput.insertAdjacentElement('afterend', circle);
+        madeCircle = true;
+      }
+
+      var original = circle.innerHTML;
+      var avatarNote = document.createElement('p');
+      avatarNote.className = 'photo-review__note';
+      avatarNote.setAttribute('role', 'status');
+      avatarNote.hidden = true;
+      avatarInput.insertAdjacentElement('afterend', avatarNote);
+
+      var avatarUrl = null;
+
+      function restoreAvatar() {
+        if (avatarUrl) { URL.revokeObjectURL(avatarUrl); avatarUrl = null; }
+        circle.innerHTML = original;
+        if (madeCircle) circle.hidden = true;
+      }
+
+      avatarInput.addEventListener('change', function () {
+        avatarNote.hidden = true;
+        avatarNote.classList.remove('is-error');
+        restoreAvatar();
+
+        var file = avatarInput.files[0];
+        if (!file) return;
+
+        var problem = check(file, LIMITS.avatar);
+        if (problem) {
+          avatarInput.value = '';
+          avatarNote.textContent = problem;
+          avatarNote.classList.add('is-error');
+          avatarNote.hidden = false;
+          return;
+        }
+
+        avatarUrl = URL.createObjectURL(file);
+        circle.innerHTML = '<img class="photo-review__avatar" alt="New profile picture preview">';
+        circle.firstChild.src = avatarUrl;
+        if (madeCircle) circle.hidden = false;
+
+        avatarNote.textContent = 'Preview only. Click Save profile to keep this picture.';
+        avatarNote.hidden = false;
+      });
+    }
+  })();
+
   (function () {
     var toggle = document.getElementById('anon-toggle');
     var box = document.getElementById('anon-confirm');

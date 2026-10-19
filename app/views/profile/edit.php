@@ -20,8 +20,11 @@
 
         <div class="form-field">
           <label for="full_name">Full name</label>
-          <input class="text-input" type="text" id="full_name" name="full_name" minlength="2" maxlength="100"
-                 value="<?= e($form['full_name']) ?>" required>
+            <input class="text-input" type="text" id="anon-name" name="anon_name"
+             minlength="3" maxlength="30" pattern="[A-Za-z0-9_]{3,30}"
+             title="3 to 30 characters: letters, numbers and underscores. Use _ instead of spaces."
+             placeholder="e.g. Midnight_Owl"
+             value="<?= e($currentUser['anon_name'] ?? '') ?>" required>
         </div>
 
         <div class="form-field">
@@ -51,7 +54,7 @@
     <div class="form-field">
       <label for="anon-name">Anonymous name</label>
       <input class="text-input" type="text" id="anon-name" name="anon_name"
-             minlength="3" maxlength="30" placeholder="e.g. Midnight Owl"
+             minlength="3" maxlength="30" placeholder="E.g pitsenyur deha mega"
              value="<?= e($currentUser['anon_name'] ?? '') ?>" required>
     </div>
     <div class="form-actions">

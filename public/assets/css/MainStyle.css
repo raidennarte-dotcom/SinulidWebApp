@@ -2136,3 +2136,278 @@ a.settings-menu__item {
   font-size: 0.75rem;
   color: var(--text-muted);
 }
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+img,
+video {
+  max-width: 100%;
+}
+
+/* ---------- Small laptops ---------- */
+@media (max-width: 1200px) {
+  .dashboard {
+    padding: 20px;
+    gap: 20px;
+  }
+}
+
+/* ---------- Tablets and phones: one column ---------- */
+@media (max-width: 960px) {
+  .topbar {
+    gap: 10px;
+    padding: 0 16px;
+  }
+
+  .search {
+    max-width: none;
+  }
+
+  .composer-column {
+    width: 100%;
+  }
+
+  .feed {
+    min-height: 0;
+    padding: 14px;
+  }
+
+  .flash-wrap {
+    top: calc(var(--topbar-height) + 12px);
+  }
+
+  /* Profile panel becomes a drawer */
+  .profile-panel {
+    position: fixed;
+    top: var(--topbar-height);
+    right: 0;
+    bottom: 0;
+    order: 0;
+    z-index: 90;
+    width: min(92vw, 360px);
+    max-height: none;
+    overflow-y: auto;
+    border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  }
+
+  .profile-panel:not([hidden]) {
+    animation-name: panel-reveal;
+  }
+
+  /* Post action row fits on one line */
+  .post__actions {
+    flex-wrap: wrap;
+  }
+}
+
+/* ---------- Phones ---------- */
+@media (max-width: 520px) {
+  :root {
+    --gap: 14px;
+  }
+
+  .dashboard {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .topbar {
+    gap: 8px;
+    padding: 0 12px;
+  }
+
+  .topbar__logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .search__input {
+    height: 40px;
+    padding: 0 14px;
+    font-size: 1rem;
+  }
+
+  .notif__btn,
+  .profile-toggle {
+    width: 42px;
+    height: 42px;
+  }
+
+  .notif + .profile-toggle {
+    margin-left: 8px;
+  }
+
+  /* Notifications: centered under the top bar */
+  .notif__panel {
+    position: fixed;
+    top: calc(var(--topbar-height) + 8px);
+    left: 50%;
+    right: auto;
+    width: min(94vw, 380px);
+    transform: translateX(-50%);
+  }
+
+  /* Profile drawer uses the full width */
+  .profile-panel {
+    width: 100vw;
+    border-radius: 0;
+  }
+
+  .composer {
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .composer__textarea {
+    min-height: 110px;
+    font-size: 1rem;
+  }
+
+  .post {
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .post__avatar {
+    width: 38px;
+    height: 38px;
+  }
+
+  .post__image {
+    max-height: 360px;
+  }
+
+  .post__action {
+    padding: 0 10px;
+  }
+
+  /* Share menu opens leftward so it stays on screen */
+  .post .post__share .share-menu {
+    left: auto;
+    right: 0;
+  }
+
+  .post__comment-input,
+  .text-input {
+    font-size: 1rem;
+  }
+
+  .form-card,
+  .anon-card {
+    padding: 16px;
+  }
+
+  .follow-tabs {
+    flex-wrap: wrap;
+  }
+
+  .user-card {
+    padding: 10px 12px;
+  }
+}
+
+/* ---------- Very narrow phones ---------- */
+@media (max-width: 420px) {
+  .post__action-label {
+    display: none;
+  }
+
+  .post__actions {
+    justify-content: space-between;
+  }
+}
+
+/* ---------- Top bar brand stays visible on every screen ---------- */
+@media (max-width: 960px) {
+  .topbar__brand {
+    display: inline-flex;
+    align-items: center;
+    width: auto;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 520px) {
+  .topbar__brand {
+    display: inline-flex;
+    font-size: 1.0625rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .topbar {
+    gap: 6px;
+    padding: 0 10px;
+  }
+
+  .topbar__logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .topbar__brand {
+    font-size: 1rem;
+  }
+
+  .search__input {
+    padding: 0 12px;
+  }
+}
+
+/* ---------- Photo review (preview before saving) ---------- */
+.photo-review {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.photo-review[hidden],
+.photo-review__img[hidden],
+.photo-review__remove[hidden] {
+  display: none;
+}
+
+.photo-review__img {
+  display: block;
+  width: 100%;
+  max-height: 240px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.photo-review__remove {
+  height: 34px;
+  padding: 0 14px;
+  font-size: 0.8125rem;
+}
+
+.photo-review__note {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.photo-review__note.is-error {
+  color: var(--error-text);
+}
+
+.photo-review__avatar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-review__avatar-box {
+  width: 96px;
+  height: 96px;
+  overflow: hidden;
+  border: 3px solid var(--border);
+  border-radius: 50%;
+}
+
+.photo-review__avatar-box[hidden] {
+  display: none;
+}

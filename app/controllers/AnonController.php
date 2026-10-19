@@ -30,8 +30,8 @@ class AnonController extends Controller
         $users = new UserModel($this->pdo);
         $name  = trim((string) ($_POST['anon_name'] ?? ''));
 
-        if (preg_match('/^[\p{L}\p{N}_ ]{3,30}$/u', $name) !== 1) {
-            flash('error', 'Anonymous name must be 3 to 30 characters: letters, numbers, spaces and underscores.');
+                if (preg_match('/^[\p{L}\p{N}_]{3,30}$/u', $name) !== 1) {
+            flash('error', 'Invalid anonymous name, please use underscores instead of spaces.');
             redirect(url('profile/edit'));
         }
         if ($users->anonNameTaken($name, (int) $me['id']) || $users->usernameExists($name)) {

@@ -22,7 +22,10 @@ class LikeModel
             if ($del->rowCount() > 0) {
                 $liked = false;
             } else {
-                $ins = $this->pdo->prepare('INSERT IGNORE INTO likes (post_id, user_id) VALUES (:p, :u)');
+                $ins = $this->pdo->prepare(
+                    'INSERT INTO likes (post_id, user_id) VALUES (:p, :u)
+                     ON DUPLICATE KEY UPDATE post_id = post_id'
+                );
                 $ins->execute([':p' => $postId, ':u' => $userId]);
                 $liked = true;
             }
