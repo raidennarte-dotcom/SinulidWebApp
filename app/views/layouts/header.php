@@ -39,6 +39,7 @@ $ver = function (string $file): int {
     <header class="topbar">
       <a href="<?= e(url('feed')) ?>" class="topbar__brand">Sinulid</a>
 
+
       <form class="search" role="search" action="<?= e(base_url()) ?>/index.php" method="get">
         <input type="hidden" name="r" value="search" />
         <label class="visually-hidden" for="search-input">Search people and posts</label>

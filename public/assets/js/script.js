@@ -219,7 +219,7 @@
         icon.classList.toggle("bi-heart-fill", data.liked);
         icon.classList.toggle("bi-heart", !data.liked);
       }
-      const count = button.querySelector(".post__count");
+      const count = button.querySelector(". post__count");
       if (count) count.textContent = String(data.count);
     } catch (networkError) {
       showToast("Network problem. Your like was not saved.");

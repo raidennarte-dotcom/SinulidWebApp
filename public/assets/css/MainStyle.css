@@ -828,6 +828,41 @@ button {
   color: var(--accent);
 }
 
+/* ---------- Composer Panel: Independent Scrolling ---------- */
+.composer-column {
+  position: sticky;
+  top: calc(var(--topbar-height) + var(--gap));
+
+  /* Limit the panel to the visible screen height */
+  max-height: calc(100vh - var(--topbar-height) - var(--gap) * 2);
+
+  /* Enable scrolling inside the panel */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  /* Thin scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+/* Chrome, Edge, and other WebKit browsers */
+.composer-column::-webkit-scrollbar {
+  width: 6px;
+}
+
+.composer-column::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+/* Disable independent scrolling on smaller screens */
+@media (max-width: 960px) {
+  .composer-column {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
+}
 /* ==========================================================
    8. RESPONSIVE
    ========================================================== */

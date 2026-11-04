@@ -59,7 +59,7 @@ class UserModel
         return (int) $this->pdo->lastInsertId();
     }
 
-    public function updateProfile(int $id, string $fullName, ?string $bio, bool $setImage, ?string $image): void
+        public function updateProfile(int $id, string $fullName, ?string $bio, bool $setImage, ?string $image): void
     {
         if ($setImage) {
             $st = $this->pdo->prepare(

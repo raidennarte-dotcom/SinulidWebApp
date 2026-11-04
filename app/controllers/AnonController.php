@@ -5,6 +5,7 @@ class AnonController extends Controller
 {
     public function toggle(): void
     {
+
         $me = $this->requireLogin();
         $this->requireCsrf();
 

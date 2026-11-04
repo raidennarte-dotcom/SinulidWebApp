@@ -9,7 +9,7 @@
           <p class="profile-card__username">@<?= e($profileUser['username']) ?></p>
           <?php if (!empty($profileUser['bio'])): ?>
             <p class="profile-card__bio"><?= nl2br(e($profileUser['bio'])) ?></p>
-          <?php else: ?>s
+          <?php else: ?>
             <p class="profile-card__bio profile-card__bio--empty">No bio yet.</p>
           <?php endif; ?>
           <p class="profile-card__stats">

@@ -20,11 +20,9 @@
 
         <div class="form-field">
           <label for="full_name">Full name</label>
-            <input class="text-input" type="text" id="anon-name" name="anon_name"
-             minlength="3" maxlength="30" pattern="[A-Za-z0-9_]{3,30}"
-             title="3 to 30 characters: letters, numbers and underscores. Use _ instead of spaces."
-             placeholder="e.g. Midnight_Owl"
-             value="<?= e($currentUser['anon_name'] ?? '') ?>" required>
+          <input class="text-input" type="text" id="full_name" name="full_name"
+                 maxlength="100" placeholder="Your full name"
+                 value="<?= e($form['full_name'] ?? '') ?>">
         </div>
 
         <div class="form-field">
@@ -36,7 +34,7 @@
         <div class="form-field">
           <label for="bio">Bio</label>
           <textarea class="composer__textarea" id="bio" name="bio" rows="4" maxlength="300"
-                    placeholder="Tell people a little about yourself"><?= e($form['bio']) ?></textarea>
+                    placeholder="Tell people a little about yourself"><?= e($form['bio'] ?? '') ?></textarea>
         </div>
 
         <div class="form-actions">
@@ -44,24 +42,28 @@
           <button type="submit" class="composer__submit">Save profile</button>
         </div>
       </form>
-      <section class="anon-card" aria-labelledby="anon-card-title">
-  <h2 class="form-card__title" id="anon-card-title">Anonymous account</h2>
-  <p class="field-hint">
-    Pick the name people see when anonymous mode is on. They never see your real name, username or picture.
-  </p>
-  <form class="anon-card__form" action="<?= e(url('anon/name')) ?>" method="post">
-    <?= csrf_field() ?>
-    <div class="form-field">
-      <label for="anon-name">Anonymous name</label>
-      <input class="text-input" type="text" id="anon-name" name="anon_name"
-             minlength="3" maxlength="30" placeholder="E.g pitsenyur deha mega"
-             value="<?= e($currentUser['anon_name'] ?? '') ?>" required>
-    </div>
-    <div class="form-actions">
-      <button type="submit" class="btn">Save anonymous name</button>
-    </div>
-  </form>
-</section>
+    </section>
+
+    <section class="anon-card" aria-labelledby="anon-card-title">
+      <h2 class="form-card__title" id="anon-card-title">Anonymous account</h2>
+      <p class="field-hint">
+        Pick the name people see when anonymous mode is on. They never see your real name, username or picture.
+      </p>
+      <form class="anon-card__form" action="<?= e(url('anon/name')) ?>" method="post">
+        <?= csrf_field() ?>
+        <div class="form-field">
+          <label for="anon-name">Anonymous name</label>
+          <input class="text-input" type="text" id="anon-name" name="anon_name"
+                 minlength="3" maxlength="30" pattern="[A-Za-z0-9_]{3,30}"
+                 title="3 to 30 characters: letters, numbers and underscores. Use _ instead of spaces."
+                 placeholder="e.g. Midnight_Owl"
+                 value="<?= e($currentUser['anon_name'] ?? '') ?>" required>
+          <small class="field-hint">Letters, numbers and underscores only. No spaces.</small>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn">Save anonymous name</button>
+        </div>
+      </form>
     </section>
   </div>
 </main>
